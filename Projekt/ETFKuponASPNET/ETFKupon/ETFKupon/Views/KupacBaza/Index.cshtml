@@ -1,0 +1,57 @@
+﻿@model IEnumerable<object>
+
+@{
+    ViewBag.Title = "Početna strana";
+    List<ETFKupon.Models.Interes> listaInteresa = Model.ToList()[0] as List<ETFKupon.Models.Interes>;
+    List<ETFKupon.Models.Artikal> listaArtikala = Model.ToList()[1] as List<ETFKupon.Models.Artikal>;
+    List<ETFKupon.Models.Artikal> artikliKorpa = Model.ToList()[2] as List<ETFKupon.Models.Artikal>;
+}
+
+<div class="jumbotron">
+    <div style="text-align:center">
+        <font size="6">Dobrodošao korisniče @Session["User"].ToString()</font>
+    </div>
+    <div style="text-align:center">
+        <input style="height:34px" type="text" placeholder="Pretraga artikala" name="pretragaArtikala">
+        <button class="btn btn-default" type="submit">Traži</button>
+        <input type="button" class="btn btn-default" value="Edituj profil" onclick="window.location.href='@Url.Action("Edit", "KupacBaza",new { id= @Session["UserId"]})';"/>
+        <input type="button" class="btn btn-default" value="Obriši profil" onclick="window.location.href='@Url.Action("Delete", "KupacBaza", new { id=@Session["UserId"] })';"/>
+        
+        <input type="button" class="btn btn-primary btn-lg" value="Odjavi se" onclick="window.location.href='@Url.Action("Index", "Home")';"/>
+    </div>
+</div>
+
+<h2>Lista interesa</h2>
+<ul>
+    @foreach (var item in listaInteresa)
+    {
+        <li>@item.Naziv</li>
+    }
+</ul>
+<h2>Lista Artikala</h2>
+<div>
+    @foreach (var item in listaArtikala)
+    {
+        <li>@item.Naziv @item.Kolicina @item.Cijena</li>
+        @Html.ActionLink("Kupi", "Details", new { controller = "Artikal", id = item.id })
+    }
+</div>
+<h2>Korpa</h2>
+<div>
+    @foreach (var item in artikliKorpa)
+    {
+        <li>@item.Naziv @item.Kolicina @item.Cijena</li>
+    }
+</div>
+
+
+
+<div class="dodavanjeInteresa">
+    @using (Html.BeginForm("SaveRecords", "InteresKupca", FormMethod.Post))
+    {
+        <h2>Dodavanje interesa: </h2>
+        @Html.DropDownList("Lista interesa", ViewBag.ListaInteresaSelekcija as List<SelectListItem>, "Odaberi interes:")
+        <button type="submit">Dodaj interes!</button>
+    }
+</div>
+
